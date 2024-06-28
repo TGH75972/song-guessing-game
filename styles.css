@@ -49,3 +49,19 @@ border: 2px solid white;
 right: 610px;
 padding: 10px;
 }
+
+#lockButton{
+    position: absolute;
+    bottom: 252px;
+    right: 540px;
+    color: black;
+    font-size: 20px;
+    border: 2px solid white;
+    border-radius: 10px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    cursor: pointer;
+}
+
+span{
+    color: rgb(247, 226, 209);
+}
