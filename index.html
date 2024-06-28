@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Identifier</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+</head>
+<body>
+    <h1>Identify the Music</h1>
+    <div id="waveform"></div>
+    <div id="buttons">
+        <i class="fa-solid fa-play" id="playButton"></i>
+        <i class="fa-solid fa-pause" id="pauseButton" style="display:none;"></i>
+        <i class="fa-solid fa-stop" id="stopButton"></i>
+        <i class="fa-solid fa-volume-high" id="volumeUpButton"></i>
+        <i class="fa-solid fa-volume-mute" id="volumeMuteButton" style="display:none;"></i>
+        <input type="range" min="0" max="1" step="0.1" value="0.5" id="vrange">
+        <input type="text" placeholder="Your Guess" id="guess">
+    </div>
+    <script type="module">
+        import WaveSurfer from 'https://cdn.jsdelivr.net/npm/wavesurfer.js@7/dist/wavesurfer.esm.js';
+        
+        const wavesurfer = WaveSurfer.create({
+            container: '#waveform',
+            waveColor: '#00FFFF',
+            progressColor: '#FFFFFF',
+            backend: 'MediaElement',
+            url: '/m1.mp3', 
+        });
+        
+        document.getElementById('playButton').addEventListener('click', () => {
+            wavesurfer.play();
+            document.getElementById('playButton').style.display = 'none';
+            document.getElementById('pauseButton').style.display = 'inline';
+        });
+        
+        document.getElementById('pauseButton').addEventListener('click', () => {
+            wavesurfer.pause();
+            document.getElementById('pauseButton').style.display = 'none';
+            document.getElementById('playButton').style.display = 'inline';
+        });
+        
+        document.getElementById('stopButton').addEventListener('click', () => {
+            wavesurfer.stop();
+            document.getElementById('pauseButton').style.display = 'none';
+            document.getElementById('playButton').style.display = 'inline';
+        });
+        
+        document.getElementById('volumeUpButton').addEventListener('click', () => {
+            wavesurfer.setVolume(1);
+            document.getElementById('volumeUpButton').style.display = 'none';
+            document.getElementById('volumeMuteButton').style.display = 'inline';
+        });
+        
+        document.getElementById('volumeMuteButton').addEventListener('click', () => {
+            wavesurfer.setVolume(0);
+            document.getElementById('volumeMuteButton').style.display = 'none';
+            document.getElementById('volumeUpButton').style.display = 'inline';
+        });
+        
+        document.getElementById('vrange').addEventListener('input', (event) => {
+            wavesurfer.setVolume(event.target.value);
+        });
+        
+        wavesurfer.on('finish', () => {
+            document.getElementById('pauseButton').style.display = 'none';
+            document.getElementById('playButton').style.display = 'inline';
+        });
+    </script>
+</body>
+</html>
