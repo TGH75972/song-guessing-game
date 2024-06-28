@@ -15,21 +15,41 @@
         <i class="fa-solid fa-play" id="playButton"></i>
         <i class="fa-solid fa-pause" id="pauseButton" style="display:none;"></i>
         <i class="fa-solid fa-stop" id="stopButton"></i>
+        <i class="fa-solid fa-forward" id="skipButton"></i>
         <i class="fa-solid fa-volume-high" id="volumeUpButton"></i>
         <i class="fa-solid fa-volume-mute" id="volumeMuteButton" style="display:none;"></i>
         <input type="range" min="0" max="1" step="0.1" value="0.5" id="vrange">
         <input type="text" placeholder="Your Guess" id="guess">
+        <button id="lockButton">Lock</button>
+    </div>
+    <div id="answers" style="display:none;">
+        <p>Your Answer: <span id="yourAnswer"></span></p>
+        <p>Real Answer: <span id="realAnswer"></span></p>
     </div>
     <script type="module">
         import WaveSurfer from 'https://cdn.jsdelivr.net/npm/wavesurfer.js@7/dist/wavesurfer.esm.js';
+        
+        const songs = ['m1.mp3', 'm2.mp3', 'm3.mp3', 'm4.mp3', 'm5.mp3'];
+        const answers = [
+            'Take Me Away by neb',
+            'Way Down We Go by KALEO',
+            'Stan by Eminem',
+            'Let It Happen by Tame Impala',
+            'Rick Roll by Yours Truly'
+        ];
+        let currentSongIndex = 0;
         
         const wavesurfer = WaveSurfer.create({
             container: '#waveform',
             waveColor: '#00FFFF',
             progressColor: '#FFFFFF',
             backend: 'MediaElement',
-            url: 'm1.mp3', 
+            url: songs[currentSongIndex],
         });
+
+        function loadSong(index) {
+            wavesurfer.load(songs[index]);
+        }
         
         document.getElementById('playButton').addEventListener('click', () => {
             wavesurfer.play();
@@ -48,6 +68,15 @@
             document.getElementById('pauseButton').style.display = 'none';
             document.getElementById('playButton').style.display = 'inline';
         });
+
+        document.getElementById('skipButton').addEventListener('click', () => {
+            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            loadSong(currentSongIndex);
+            wavesurfer.play();
+            document.getElementById('pauseButton').style.display = 'inline';
+            document.getElementById('playButton').style.display = 'none';
+            document.getElementById('answers').style.display = 'none';
+        });
         
         document.getElementById('volumeUpButton').addEventListener('click', () => {
             wavesurfer.setVolume(1);
@@ -63,6 +92,15 @@
         
         document.getElementById('vrange').addEventListener('input', (event) => {
             wavesurfer.setVolume(event.target.value);
+        });
+
+        document.getElementById('lockButton').addEventListener('click', () => {
+            const guess = document.getElementById('guess').value;
+            alert(`Your guess: ${guess}`);
+            alert(`Real Answer: ${answers[currentSongIndex]}`);
+            document.getElementById('yourAnswer').textContent = guess;
+            document.getElementById('realAnswer').textContent = answers[currentSongIndex];
+            document.getElementById('answers').style.display = 'block';
         });
         
         wavesurfer.on('finish', () => {
